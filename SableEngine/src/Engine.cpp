@@ -2,9 +2,7 @@
 #include <iostream>
 #include <fstream>
 
-#ifdef ERROR
 #undef ERROR
-#endif
 
 Engine::Engine() : m_application(nullptr), m_input(nullptr), m_hinstance(nullptr), m_hwnd (nullptr)
 {

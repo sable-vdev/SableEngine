@@ -24,5 +24,5 @@ public:
 	bool Frame();
 private:
 	bool Render();
-	void SetFpsTitle();
+	void SetFpsTitle() const;
 };

@@ -47,7 +47,7 @@ bool Application::Frame()
         std::wstringstream wss{};
         wss << m_windowApplicationName;
 
-        wss << L" [" << m_fps << " (" << 1000.0/m_fps << "ms)]";
+        wss << " [" << m_fps << " (" << 1000.0/m_fps << "ms)]";
 
         fpsString = wss.str();
         SetFpsTitle();
@@ -76,7 +76,7 @@ bool Application::Render()
     return true;
 }
 
-void Application::SetFpsTitle()
+void Application::SetFpsTitle() const
 {
     SetWindowText(m_hwnd, fpsString.c_str());
 }

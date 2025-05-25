@@ -2,10 +2,9 @@
 #include <iostream>
 #include <string>
 #include <chrono>
-
-#ifdef ERROR
+#include <source_location>
 #undef ERROR
-#endif
+
 
 enum LogLevel
 {
@@ -18,7 +17,7 @@ enum LogLevel
 class Logger
 {
 public:
-	static void Log(LogLevel logLevel, const std::string& message);
+	static void Log(LogLevel logLevel, const std::string& message, const std::source_location& location = std::source_location::current());
 private:
 	static std::string LogLevelToString(LogLevel logLevel);
 	Logger() = delete;
