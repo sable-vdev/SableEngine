@@ -5,7 +5,6 @@
 #include <source_location>
 #undef ERROR
 
-
 enum LogLevel
 {
 	DEBUG,

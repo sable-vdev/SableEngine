@@ -7,7 +7,7 @@ private:
 	LPCWSTR m_windowApplicationName;
 	const float SCREEN_NEAR = 0.3f;
 	const float SCREEN_DEPTH = 1000.0f;
-	bool m_vsyncEnabled = true;
+	bool m_vsyncEnabled = false;
 	HWND m_hwnd;
 	D3DClass* m_d3dClass;
 	int m_frameCount = 0;
@@ -24,5 +24,5 @@ public:
 	bool Frame();
 private:
 	bool Render();
-	void SetFpsTitle() const;
+	void SetFpsTitle();
 };

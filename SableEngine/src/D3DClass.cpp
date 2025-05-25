@@ -149,7 +149,8 @@ bool D3DClass::Initialize(int& width, int& height, bool& vsync, HWND hwnd, bool&
     if (FAILED(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevel, sizeof(featureLevel) / sizeof(D3D_FEATURE_LEVEL), D3D11_SDK_VERSION, &swapChainDesc,
         &m_swapChain, &m_device, nullptr, &m_deviceContext)))
     {
-        return false;
+        if (FAILED(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_REFERENCE, nullptr, 0, featureLevel, sizeof(featureLevel) / sizeof(D3D_FEATURE_LEVEL), D3D11_SDK_VERSION, &swapChainDesc,
+            &m_swapChain, &m_device, nullptr, &m_deviceContext))) return false;
     }
     //get the pointer to the back buffer
     if(FAILED(m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr))) return false;
@@ -262,7 +263,7 @@ bool D3DClass::Initialize(int& width, int& height, bool& vsync, HWND hwnd, bool&
 
     //create an orthographic projection matrix for 2d rendering
     orthoMatrix = DirectX::XMMatrixOrthographicLH((float)width, (float)height, screenNear, screenDepth);
-
+    GetVideoCardInfo();
     return true;
 }
 
@@ -346,8 +347,14 @@ ID3D11DeviceContext* D3DClass::GetDeviceContext()
 
 std::string D3DClass::GetVideoCardInfo()
 {
-   
-    return "description";//std::to_string(i);
+    std::string info;
+    for (int i = 0; i < 128; i++)
+    {
+        if (m_videoCardDescription[i] == '\0') break;
+        info += m_videoCardDescription[i];
+    }
+    Logger::Log(LogLevel::INFO, "Using: " + info + " " + std::to_string(m_videoCardMemory) + " MB");
+    return info;
 }
 
 void D3DClass::SetBackBufferRenderTarget()

@@ -1,13 +1,13 @@
 #include "Application.hpp"
 
-Application::Application() : m_d3dClass(nullptr)
+Application::Application() : m_d3dClass(nullptr), m_hwnd(nullptr), m_windowApplicationName(nullptr)
 {
     QueryPerformanceCounter(&m_startTime);
     QueryPerformanceFrequency(&m_frequency);
 
 }
 
-Application::Application(const Application& other) : m_d3dClass(nullptr)
+Application::Application(const Application& other) : m_d3dClass(nullptr), m_hwnd(nullptr), m_windowApplicationName(nullptr), m_frequency({}), m_startTime({})
 {
 }
 
@@ -43,22 +43,8 @@ bool Application::Frame()
         m_fps = m_frameCount;
         m_frameCount = 0;
         m_startTime = currentTime;
-
-        std::wstringstream wss{};
-        wss << m_windowApplicationName;
-
-        wss << " [" << m_fps << " (" << 1000.0/m_fps << "ms)]";
-
-        fpsString = wss.str();
+        
         SetFpsTitle();
-
-        RECT rect{};
-        GetWindowRect(m_hwnd, &rect);
-
-        int width = rect.right - rect.left;
-        int height = rect.bottom - rect.top;
-
-        Logger::Log(LogLevel::INFO,"Width: " + std::to_string(width) + " Height:" + std::to_string(height));
     }
 
     //Render grahpics scene
@@ -76,7 +62,19 @@ bool Application::Render()
     return true;
 }
 
-void Application::SetFpsTitle() const
+void Application::SetFpsTitle() 
 {
+    std::wstringstream wss{};
+    wss << m_windowApplicationName << " [" << m_fps << " (" << 1000.0 / m_fps << "ms)]";
+
+    fpsString = wss.str();
+
+    RECT rect{};
+    GetWindowRect(m_hwnd, &rect);
+
+    int width = rect.right - rect.left;
+    int height = rect.bottom - rect.top;
+
+    Logger::Log(LogLevel::INFO, "Width: " + std::to_string(width) + " Height:" + std::to_string(height));
     SetWindowText(m_hwnd, fpsString.c_str());
 }
