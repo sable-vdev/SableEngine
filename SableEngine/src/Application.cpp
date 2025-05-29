@@ -1,19 +1,19 @@
 #include "Application.hpp"
 
-Application::Application() : m_d3dClass(nullptr), m_hwnd(nullptr), m_windowApplicationName(nullptr)
+Application::Application() : m_d3dClass(nullptr), m_hwnd(nullptr), m_windowApplicationName(nullptr),
+    m_deltaTime(0.0f), m_timer(0.0f)
 {
-    QueryPerformanceCounter(&m_startTime);
+    QueryPerformanceCounter(&m_lastTime);
     QueryPerformanceFrequency(&m_frequency);
-
 }
 
-Application::Application(const Application& other) : m_d3dClass(nullptr), m_hwnd(nullptr), m_windowApplicationName(nullptr), m_frequency({}), m_startTime({})
+Application::Application(const Application& other)
 {
 }
 
 bool Application::Initialize(int& width, int& height, bool& fullscreen, HWND hwnd, LPCWSTR applicationName)
 {
-    m_d3dClass = new D3DClass;
+    m_d3dClass = new Direct3D;
     m_hwnd = hwnd;
     m_windowApplicationName = applicationName;
     return m_d3dClass->Initialize(width, height, m_vsyncEnabled, hwnd, fullscreen, SCREEN_DEPTH, SCREEN_NEAR);
@@ -32,21 +32,21 @@ void Application::Shutdown()
 
 bool Application::Frame()
 {
-    m_frameCount++;
-
     LARGE_INTEGER currentTime;
     QueryPerformanceCounter(&currentTime);
-    float elapsedTime = static_cast<float>(currentTime.QuadPart - m_startTime.QuadPart) / m_frequency.QuadPart;
+    m_deltaTime = static_cast<float>(currentTime.QuadPart - m_lastTime.QuadPart) / m_frequency.QuadPart;
 
-    if (elapsedTime >= 1.0f)
+    m_timer += m_deltaTime;
+
+    if (m_timer >= 1.0f)
     {
-        m_fps = m_frameCount;
-        m_frameCount = 0;
-        m_startTime = currentTime;
+        m_timer = 0.0f;
         
         SetFpsTitle();
+        m_fps = 0;
     }
-
+    m_lastTime = currentTime;
+    m_fps++;
     //Render grahpics scene
     return Render();
 }
@@ -68,7 +68,7 @@ void Application::SetFpsTitle()
     wss << m_windowApplicationName << " [" << m_fps << " (" << 1000.0 / m_fps << "ms)]";
 
     fpsString = wss.str();
-
+    /*
     RECT rect{};
     GetWindowRect(m_hwnd, &rect);
 
@@ -76,5 +76,6 @@ void Application::SetFpsTitle()
     int height = rect.bottom - rect.top;
 
     Logger::Log(LogLevel::INFO, "Width: " + std::to_string(width) + " Height:" + std::to_string(height));
+    */
     SetWindowText(m_hwnd, fpsString.c_str());
 }

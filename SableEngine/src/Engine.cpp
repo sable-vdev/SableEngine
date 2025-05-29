@@ -11,7 +11,7 @@ Engine::Engine() : m_application(nullptr), m_input(nullptr), m_hinstance(nullptr
 #endif
 	if (!Initialize(1280, 720, false))
 	{
-		Logger::Log(LogLevel::ERROR, "Failed to initialize window.");
+		Logger::Log(ERROR, "Failed to initialize window.");
 		MessageBox(m_hwnd, L"Failed to initialize Window", L"Error", MB_OK);
 		DestroyWindow(m_hwnd);
 	}
@@ -25,7 +25,7 @@ Engine::Engine(int width, int height, bool fullscreen) : m_application(nullptr),
 #endif
 	if (!Initialize(width, height, fullscreen))
 	{
-		Logger::Log(LogLevel::ERROR, "Failed to initialize window.");
+		Logger::Log(ERROR, "Failed to initialize window.");
 	}
 	Logger::Log(INFO, "Application started");
 }

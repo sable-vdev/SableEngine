@@ -21,13 +21,22 @@
     <ClInclude Include="src\Application.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\D3DClass.hpp">
+    <ClInclude Include="src\Direct3D.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Logger.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Model.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColorShader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,7 +47,7 @@
     <ClCompile Include="src\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\D3DClass.cpp">
+    <ClCompile Include="src\Direct3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine.cpp">
@@ -47,5 +56,20 @@
     <ClCompile Include="src\Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ColorShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\Color.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shader\PixelColor.ps" />
   </ItemGroup>
 </Project>

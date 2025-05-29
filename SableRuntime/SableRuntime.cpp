@@ -1,11 +1,12 @@
 #include "Engine.hpp"
-
+#include <memory>
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
     _In_ LPWSTR    lpCmdLine,
     _In_ int       nCmdShow)
 {
-	Engine* engine = new Engine;
+	
+	std::unique_ptr<Engine> engine = std::make_unique<Engine>();
 
 	try
 	{
@@ -13,12 +14,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 	catch (const std::exception& ex)
 	{
-		std::cout << ex.what() << std::endl;
+#ifdef ERROR
+#undef ERROR
+#endif // ERROR
+		Logger::Log(ERROR, ex.what());
 		return EXIT_FAILURE;
 	}
 	engine->Shutdown();
-	engine = nullptr;
-	delete engine;
 
 	return EXIT_SUCCESS;
 }

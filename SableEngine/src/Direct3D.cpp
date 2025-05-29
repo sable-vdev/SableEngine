@@ -1,30 +1,32 @@
-#include "D3DClass.hpp"
+#include "Direct3D.hpp"
 #include <iostream>
 #include <fstream>
 
-
-D3DClass::D3DClass() : m_swapChain(nullptr), m_device(nullptr), m_deviceContext(nullptr), m_renderTargetView(nullptr),
+#ifdef ERROR
+#undef ERROR
+#endif
+Direct3D::Direct3D() : m_swapChain(nullptr), m_device(nullptr), m_deviceContext(nullptr), m_renderTargetView(nullptr),
     m_depthStencilBuffer(nullptr), m_depthStencilState(nullptr), m_depthStencilView(nullptr), m_rasterState(nullptr)
 {
 }
 
-D3DClass::D3DClass(const D3DClass& other) : m_swapChain(nullptr), m_device(nullptr), m_deviceContext(nullptr), m_renderTargetView(nullptr),
+Direct3D::Direct3D(const Direct3D& other) : m_swapChain(nullptr), m_device(nullptr), m_deviceContext(nullptr), m_renderTargetView(nullptr),
     m_depthStencilBuffer(nullptr), m_depthStencilState(nullptr), m_depthStencilView(nullptr), m_rasterState(nullptr)
 {
 }
 
-D3DClass::~D3DClass()
+Direct3D::~Direct3D()
 {
 
 }
 
-bool D3DClass::Initialize(int& width, int& height, bool& vsync, HWND hwnd, bool& fullscreen, float screenDepth, float screenNear)
+bool Direct3D::Initialize(int& width, int& height, bool& vsync, HWND hwnd, bool& fullscreen, float screenDepth, float screenNear)
 {
     IDXGIFactory* factory = 0;
     IDXGIAdapter* adapter{};
     IDXGIOutput* adapterOutput{};
     unsigned int numModes = 0, numerator = 0, denominator = 0;
-    unsigned long long stringLength = 128;
+    size_t stringLength = 128;
     DXGI_MODE_DESC* displayModeList{};
     DXGI_ADAPTER_DESC adapterDesc{};
     DXGI_SWAP_CHAIN_DESC swapChainDesc{};
@@ -146,11 +148,22 @@ bool D3DClass::Initialize(int& width, int& height, bool& vsync, HWND hwnd, bool&
     //dont set the advanced flags
     swapChainDesc.Flags = 0;
 
+    UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+#ifndef NDEBUG
+    creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif // !NDEBUG
+
+
     if (FAILED(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevel, sizeof(featureLevel) / sizeof(D3D_FEATURE_LEVEL), D3D11_SDK_VERSION, &swapChainDesc,
         &m_swapChain, &m_device, nullptr, &m_deviceContext)))
     {
+        Logger::Log(ERROR, "Failed to create device and swapchain on a discrete gpu");
         if (FAILED(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_REFERENCE, nullptr, 0, featureLevel, sizeof(featureLevel) / sizeof(D3D_FEATURE_LEVEL), D3D11_SDK_VERSION, &swapChainDesc,
-            &m_swapChain, &m_device, nullptr, &m_deviceContext))) return false;
+            &m_swapChain, &m_device, nullptr, &m_deviceContext)))
+        {
+            Logger::Log(ERROR, "Failed to create device and swapchain on a integrated gpu");
+            return false;
+        }
     }
     //get the pointer to the back buffer
     if(FAILED(m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr))) return false;
@@ -263,11 +276,11 @@ bool D3DClass::Initialize(int& width, int& height, bool& vsync, HWND hwnd, bool&
 
     //create an orthographic projection matrix for 2d rendering
     orthoMatrix = DirectX::XMMatrixOrthographicLH((float)width, (float)height, screenNear, screenDepth);
-    GetVideoCardInfo();
+    Logger::Log(LogLevel::INFO, GetVideoCardInfo());
     return true;
 }
 
-void D3DClass::Shutdown()
+void Direct3D::Shutdown()
 {
     if (m_swapChain) m_swapChain->SetFullscreenState(false, nullptr);
 
@@ -314,7 +327,7 @@ void D3DClass::Shutdown()
 
 }
 
-void D3DClass::BeginScene(float red, float green, float blue, float alpha)
+void Direct3D::BeginScene(float red, float green, float blue, float alpha)
 {
     float color[4] = { red, green, blue, alpha };
 
@@ -325,7 +338,7 @@ void D3DClass::BeginScene(float red, float green, float blue, float alpha)
     m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
-void D3DClass::EndScene()
+void Direct3D::EndScene()
 {
     //present the back buffer to the screen since rendering is complete
     if (m_vsyncEnabled)
@@ -335,17 +348,17 @@ void D3DClass::EndScene()
     else m_swapChain->Present(0, 0);
 }
 
-ID3D11Device* D3DClass::GetDevice()
+ID3D11Device* Direct3D::GetDevice()
 {
     return m_device;
 }
 
-ID3D11DeviceContext* D3DClass::GetDeviceContext()
+ID3D11DeviceContext* Direct3D::GetDeviceContext()
 {
     return m_deviceContext;
 }
 
-std::string D3DClass::GetVideoCardInfo()
+std::string Direct3D::GetVideoCardInfo()
 {
     std::string info;
     for (int i = 0; i < 128; i++)
@@ -353,16 +366,16 @@ std::string D3DClass::GetVideoCardInfo()
         if (m_videoCardDescription[i] == '\0') break;
         info += m_videoCardDescription[i];
     }
-    Logger::Log(LogLevel::INFO, "Using: " + info + " " + std::to_string(m_videoCardMemory) + " MB");
+    info = "Using: " + info + " " + std::to_string(m_videoCardMemory) + " MB";
     return info;
 }
 
-void D3DClass::SetBackBufferRenderTarget()
+void Direct3D::SetBackBufferRenderTarget()
 {
     m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 }
 
-void D3DClass::ResetViewport()
+void Direct3D::ResetViewport()
 {
     m_deviceContext->RSSetViewports(1, &m_viewport);
 }

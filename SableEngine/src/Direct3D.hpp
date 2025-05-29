@@ -10,7 +10,7 @@
 #include <DirectXMath.h>
 #include <stdexcept>
 
-class D3DClass
+class Direct3D
 {
 private:
 	bool m_vsyncEnabled;
@@ -30,9 +30,9 @@ public:
 	DirectX::XMMATRIX worldMatrix;
 	DirectX::XMMATRIX orthoMatrix;
 public:
-	D3DClass();
-	D3DClass(const D3DClass& other);
-	~D3DClass();
+	Direct3D();
+	Direct3D(const Direct3D& other);
+	~Direct3D();
 	bool Initialize(int& width, int& height, bool& vsync, HWND hwnd, bool& fullscreen, float screenDepth, float screenNear);
 	void Shutdown();
 	void BeginScene(float red, float green, float blue, float alpha);

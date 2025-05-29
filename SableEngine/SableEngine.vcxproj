@@ -11,18 +11,33 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\D3DClass.hpp" />
+    <ClInclude Include="src\ColorShader.hpp" />
+    <ClInclude Include="src\Camera.hpp" />
+    <ClInclude Include="src\Model.hpp" />
+    <ClInclude Include="src\Direct3D.hpp" />
     <ClInclude Include="src\Application.hpp" />
     <ClInclude Include="src\Input.hpp" />
     <ClInclude Include="src\Engine.hpp" />
     <ClInclude Include="src\Logger.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ColorShader.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Logger.cpp" />
-    <ClCompile Include="src\D3DClass.cpp" />
+    <ClCompile Include="src\Direct3D.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Engine.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\Color.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shader\PixelColor.ps">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -77,6 +92,9 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <FxCompile>
+      <ShaderType>Vertex</ShaderType>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
